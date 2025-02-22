@@ -45,16 +45,6 @@ class Sistema:
         if self.solucion is None:
             raise ValueError("Primero debes resolver la ecuación.")
 
-        # plt.figure(figsize=(8, 5))
-        # for i in range(self.solucion.y.shape[0]):
-        #     plt.plot(self.solucion.t, self.solucion.y[i], label=f"Variable {i+1}")
-        # plt.xlabel("Tiempo")
-        # plt.ylabel("Valor")
-        # plt.title(f"Solución de la EDO usando {self.metodo}")
-        # plt.legend()
-        # plt.grid()
-        # plt.show()
-
         fig = plt.figure(figsize=(10, 8))
         ax = fig.add_subplot(111, projection='3d')
 
@@ -67,10 +57,6 @@ class Sistema:
         ax.view_init(elev=30, azim=60)
         plt.tight_layout()
         plt.show()
-
-
-
-
 
     def graficar_series_tiempo(self):
         """Grafica la serie de tiempo de la solución o todas."""
@@ -100,4 +86,14 @@ class Sistema:
 
     def dataframe(self):
         """Devuelve el dataframe de la series de tiempo """
-        pass
+        if self.solucion is None:
+            raise ValueError("Primero debes resolver la ecuación.")
+        
+        # for i in range(self.solucion.y.shape[0]):
+        X = self.solucion.y[0]
+        Y = self.solucion.y[1]
+        Z = self.solucion.y[2]
+     
+        df = pd.DataFrame({'x':X,'y':Y,'z':Z })
+
+        return df
