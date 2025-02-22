@@ -1,15 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import solve_ivp
+import pandas as pd
 
 class Sistema:
-
-# Primero, deberiamos de ser capaces de:
-#
-#  * generar las soluciones del sistema con la ventaja de que podemos decidir
-#    - el tipo de solucionador.
-#    - condicionces inciales.
-#    - intervalo de tiempo.
 
     """
     Clase para resolver ecuaciones diferenciales ordinarias (EDOs).
@@ -22,7 +17,7 @@ class Sistema:
     """
 
 
-    def __init__(self, f, y0, t, metodo="RK45"):
+    def __init__(self, f, y0, t, metodo = "RK45"):
         self.f = f
         self.y0 = np.atleast_1d(y0)
         self.t = t
@@ -44,42 +39,65 @@ class Sistema:
         self.solucion = solve_ivp(self.f, [self.t[0], self.t[-1]], self.y0,
                                     t_eval=self.t, method=self.metodo)
         return self.solucion
-
-#  * una vez que tengamos las soluciones, debemos poder:
-#    - plotearlas, separadas y una imagen 3D.
-#    - guardarlas como imagen en un folder con su nombre obvio.
-#    - crear un dataframe para su posteridad, incluso poder guardarlo seria bueno.
-# 
-#   algo extra pero no creo que estorbe es poder sacar la info, pero eso luego.
-
-
-
+    
     def graficar(self):
         """Grafica la solución obtenida de la EDO."""
         if self.solucion is None:
             raise ValueError("Primero debes resolver la ecuación.")
 
-        plt.figure(figsize=(8, 5))
-        for i in range(self.solucion.y.shape[0]):
-            plt.plot(self.solucion.t, self.solucion.y[i], label=f"Variable {i+1}")
-        plt.xlabel("Tiempo")
-        plt.ylabel("Valor")
-        plt.title(f"Solución de la EDO usando {self.metodo}")
-        plt.legend()
-        plt.grid()
+        # plt.figure(figsize=(8, 5))
+        # for i in range(self.solucion.y.shape[0]):
+        #     plt.plot(self.solucion.t, self.solucion.y[i], label=f"Variable {i+1}")
+        # plt.xlabel("Tiempo")
+        # plt.ylabel("Valor")
+        # plt.title(f"Solución de la EDO usando {self.metodo}")
+        # plt.legend()
+        # plt.grid()
+        # plt.show()
+
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        ax.plot(self.solucion.y[0], self.solucion.y[1], self.solucion.y[2], color='purple', lw=0.5)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+        ax.set_title('Lorenz Attractor (3D)')
+
+        ax.view_init(elev=30, azim=60)
+        plt.tight_layout()
         plt.show()
 
+
+
+
+
     def graficar_series_tiempo(self):
-        """Grafica la serie de tiempo de la solución (para múltiples variables)."""
+        """Grafica la serie de tiempo de la solución o todas."""
+
         if self.solucion is None:
             raise ValueError("Primero debes resolver la ecuación.")
 
-        fig, ax = plt.subplots(figsize=(8, 5))
+        # Create subplots and share the x-axis
+        fig, axs = plt.subplots(self.solucion.y.shape[0], 1, figsize=(10, 8), sharex=True)
+         
+        labels = ['x', 'y', 'z']
+        colors = ['r', 'g', 'b'] 
+
+        # Plot each series in the solution
         for i in range(self.solucion.y.shape[0]):
-            ax.plot(self.solucion.t, self.solucion.y[i], label=f"Serie {i+1}")
-        ax.set_xlabel("Tiempo")
-        ax.set_ylabel("Valor")
-        ax.set_title("Series de Tiempo de la Solución")
-        ax.legend()
-        ax.grid()
+            axs[i].plot(self.solucion.t, self.solucion.y[i],color=colors[i])
+            axs[i].set_ylabel(labels[i])
+            axs[i].grid()
+
+        axs[-1].set_xlabel("Time")  # Set xlabel for the last subplot only
+
+        # Set the title for the entire figure
+        fig.suptitle(f"Series de Tiempo de {self.f.__name__}")
+
+        plt.tight_layout()
         plt.show()
+
+    def dataframe(self):
+        """Devuelve el dataframe de la series de tiempo """
+        pass
