@@ -40,7 +40,7 @@ class Sistema:
                                     t_eval=self.t, method=self.metodo)
         return self.solucion
     
-    def graficar(self):
+    def graficar_3d(self):
         """Grafica la solución obtenida de la EDO."""
         if self.solucion is None:
             raise ValueError("Primero debes resolver la ecuación.")
@@ -97,3 +97,56 @@ class Sistema:
         df = pd.DataFrame({'x':X,'y':Y,'z':Z })
 
         return df
+    
+
+    def graficar(self, tipo='3d', guardar=False, show_plot=True, filename='plot.png'):
+        """
+        Genera la gráfica de la solución de la EDO.
+        
+        Parámetros:
+        - tipo: '3d' para la trayectoria en 3D o 'series' para la serie de tiempo.
+        - guardar: si True, guarda la gráfica en un archivo.
+        - show_plot: si True, muestra la gráfica en pantalla.
+        - filename: nombre del archivo donde se guardará la gráfica.
+        
+        Retorna el objeto figura (fig).
+        """
+        if self.solucion is None:
+            raise ValueError("Primero debes resolver la ecuación.")
+
+        if tipo == '3d':
+            fig = plt.figure(figsize=(10, 8))
+            ax = fig.add_subplot(111, projection='3d')
+            ax.plot(self.solucion.y[0], self.solucion.y[1], self.solucion.y[2],
+                    color='purple', lw=0.5)
+            ax.set_xlabel('x')
+            ax.set_ylabel('y')
+            ax.set_zlabel('z')
+            ax.set_title('Lorenz Attractor (3D)')
+            ax.view_init(elev=30, azim=60)
+
+        elif tipo == 'series':
+            fig, axs = plt.subplots(self.solucion.y.shape[0], 1, figsize=(10, 8), sharex=True)
+            labels = ['x', 'y', 'z']
+            colors = ['r', 'g', 'b']
+
+            for i in range(self.solucion.y.shape[0]):
+                axs[i].plot(self.solucion.t, self.solucion.y[i], color=colors[i])
+                axs[i].set_ylabel(labels[i])
+                axs[i].grid()
+
+            axs[-1].set_xlabel("Time")
+            fig.suptitle(f"Series de Tiempo de {self.f.__name__}")
+
+        else:
+            raise ValueError("Tipo de gráfica no reconocido. Usa '3d' o 'series'.")
+
+        plt.tight_layout()
+
+        if guardar:
+            fig.savefig(filename)
+            print(f"Gráfica guardada en {filename}")
+
+        if show_plot:
+            plt.show()
+        return fig
