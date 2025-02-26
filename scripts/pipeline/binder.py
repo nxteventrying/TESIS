@@ -4,14 +4,10 @@ from functools import partial
 
 
 class Binder:
-    def __init__(self, f,r,params,y0, t, metodo = "RK45"):
+    def __init__(self, f,params):
     
         self.f = f
-        self.r = r
         self.params = params
-        self.y0 = np.atleast_1d(y0)
-        self.t = t
-        self.metodo = metodo
         self.module = None
         self.prepared_function = None
 
@@ -21,6 +17,13 @@ class Binder:
         globals()[module_name] = module
         print(f"Module {module_name} imported and available globally.")
         return module
+    
+
+    def fixer(self, params):
+        if self.module is None:
+            print("You have to import_module first :)")
+
+        return fixed_function
 
    
 

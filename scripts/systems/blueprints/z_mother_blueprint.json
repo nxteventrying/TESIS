@@ -1,0 +1,19 @@
+{
+    "system_name": "DefaultSystem",
+    "parameters": {},
+    "child_system_count": 0,
+    "output": {
+      "dataframe_path": "output/df.csv",
+      "images": []
+    },
+    "ed_solver": {
+      "state_vector": ["x", "y", "z"],
+      "initial_conditions": [0, 0, 0],
+      "time_frame": [0, 10],
+      "method": "RK4"
+    },
+    "paths": {
+      "log": "logs/system.log"
+    }
+  }
+  
