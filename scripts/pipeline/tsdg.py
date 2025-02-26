@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import solve_ivp
 import pandas as pd
+import os
 
 class Sistema:
 
@@ -40,65 +41,6 @@ class Sistema:
                                     t_eval=self.t, method=self.metodo)
         return self.solucion
     
-    def graficar_3d(self):
-        """Grafica la solución obtenida de la EDO."""
-        if self.solucion is None:
-            raise ValueError("Primero debes resolver la ecuación.")
-
-        fig = plt.figure(figsize=(10, 8))
-        ax = fig.add_subplot(111, projection='3d')
-
-        ax.plot(self.solucion.y[0], self.solucion.y[1], self.solucion.y[2], color='purple', lw=0.5)
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
-        ax.set_zlabel('z')
-        ax.set_title('Lorenz Attractor (3D)')
-
-        ax.view_init(elev=30, azim=60)
-        plt.tight_layout()
-        plt.show()
-
-    def graficar_series_tiempo(self):
-        """Grafica la serie de tiempo de la solución o todas."""
-
-        if self.solucion is None:
-            raise ValueError("Primero debes resolver la ecuación.")
-
-        # Create subplots and share the x-axis
-        fig, axs = plt.subplots(self.solucion.y.shape[0], 1, figsize=(10, 8), sharex=True)
-         
-        labels = ['x', 'y', 'z']
-        colors = ['r', 'g', 'b'] 
-
-        # Plot each series in the solution
-        for i in range(self.solucion.y.shape[0]):
-            axs[i].plot(self.solucion.t, self.solucion.y[i],color=colors[i])
-            axs[i].set_ylabel(labels[i])
-            axs[i].grid()
-
-        axs[-1].set_xlabel("Time")  # Set xlabel for the last subplot only
-
-        # Set the title for the entire figure
-        fig.suptitle(f"Series de Tiempo de {self.f.__name__}")
-
-        plt.tight_layout()
-        plt.show()
-
-    def dataframe(self):
-        """Devuelve el dataframe de la series de tiempo """
-        if self.solucion is None:
-            raise ValueError("Primero debes resolver la ecuación.")
-        
-        # for i in range(self.solucion.y.shape[0]):
-        X = self.solucion.y[0]
-        Y = self.solucion.y[1]
-        Z = self.solucion.y[2]
-     
-        df = pd.DataFrame({'x':X,'y':Y,'z':Z })
-
-        return df
-    
-
     def graficar(self, tipo='3d', guardar=False, show_plot=True, filename='plot.png'):
         """
         Genera la gráfica de la solución de la EDO.
@@ -122,7 +64,7 @@ class Sistema:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
-            ax.set_title('Lorenz Attractor (3D)')
+            ax.set_title(f'{self.f.__name__} Attractor (3D)')
             ax.view_init(elev=30, azim=60)
 
         elif tipo == 'series':
@@ -144,9 +86,38 @@ class Sistema:
         plt.tight_layout()
 
         if guardar:
+            
             fig.savefig(filename)
             print(f"Gráfica guardada en {filename}")
+
+        # Define the directory and filename
+        directory = '/path/to/save/directory'
+        filename = 'my_plot.png'
+
+        # Ensure the directory exists
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # Construct the full path
+        full_path = os.path.join(directory, filename)
+
+        # Save the figure
+        plt.savefig(full_path)
 
         if show_plot:
             plt.show()
         return fig
+       
+    def dataframe(self):
+        """Devuelve el dataframe de la series de tiempo """
+        if self.solucion is None:
+            raise ValueError("Primero debes resolver la ecuación.")
+        
+        # for i in range(self.solucion.y.shape[0]):
+        X = self.solucion.y[0]
+        Y = self.solucion.y[1]
+        Z = self.solucion.y[2]
+     
+        df = pd.DataFrame({'x':X,'y':Y,'z':Z })
+
+        return df
