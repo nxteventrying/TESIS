@@ -19,11 +19,11 @@ class Binder:
         return module
     
 
-    def fixer(self, params):
-        if self.module is None:
-            print("You have to import_module first :)")
+    # def fixer(self, params):
+    #     if self.module is None:
+    #         print("You have to import_module first :)")
 
-        return fixed_function
+    #     return fixed_function
 
    
 

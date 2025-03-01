@@ -1,33 +1,42 @@
-# import numpy as np
-# from functools import partial
-# from systems.lorenz63 import lorenz
-# from pipeline.tsdg import Sistema as sistema
+from utils.reader import read_config as reader
+from data_generation.binder import Binder as binder
+from data_generation.tsdg import Sistema as system
+import os
+import time
 
-# # Parameters
-# sigma_val = 10.0
-# beta_val = 8.0 / 3.0
-# rho_val = 28.0
+# Ask for configuration file
 
-# # Fix parameters using lambda, pero asi no me sale el titulo en la plot
-# lorenz_fixed = lambda t, y: lorenz(t, y, sigma_val, beta_val, rho_val)
+def load_config():
 
-# # Time range
-# t = np.linspace(0, 100, 10000)
+    answer = input("Do you have a configuration file? (Y/N): ").strip().lower()
 
-# # Initial conditions
-# y0 = [1.0, 1.0, 1.0]
+    if answer == "y":
+        file_path = input("Where is your configuration file for this test?\n").strip()
+        
+        # /home/think/Desktop/TESIS/test_runs/test_1/test1.json
 
-# # Solve the system
-# edo = sistema(lorenz_fixed, y0=y0, t=t, metodo="RK45")
-# edo.resolver()
-# # edo.graficar_series_tiempo()    
-# #edo.graficar()
-# #df = edo.dataframe()
-# #print(df.head())
-# edo.graficar(tipo='3d', guardar=True, show_plot=True, filename='series_3d.png')
+        # Check if file exists
+        if not os.path.isfile(file_path):
+            print("File not found. Make sure you typed the correct path.")
+            exit(1)  # Exit script
 
+        print("\nLoading configuration...")
+        time.sleep(1)  # <- Delay for 2 seconds
+        config_data = reader(file_path)  # Read JSON
+        print("Configuration loaded")
 
-from pipeline.binder import Binder 
+        return config_data
+
+    else:
+        print("Go and make one with architect.py you dumbass")
+        exit(1)
+
+config_data = load_config()
+
+# Print everything nicely
+print("\nPLease check the configuration:\n")
+for key, value in config_data.items():
+    print(f"{key}: {value}")
 
 
 
@@ -54,73 +63,5 @@ from pipeline.binder import Binder
 
 
 
-import json
-import os
 
-# ---------- Utility Functions ----------
 
-def load_json(file_path: str) -> dict:
-    """
-    Reads and returns the JSON content from a file.
-    """
-    with open(file_path, 'r') as f:
-        return json.load(f)
-
-def merge_configs(static_config: dict, dynamic_config: dict) -> dict:
-    """
-    Merges the static (blueprint) configuration with the dynamic parameters.
-    Only the 'parameters' section is updated from the dynamic file.
-    """
-    merged_config = static_config.copy()
-    # Replace the 'parameters' part with the dynamic one
-    merged_config['parameters'] = dynamic_config.get('parameters', {})
-    return merged_config
-
-# ---------- ED Solver Function ----------
-
-def ed_solver_function(state_vector, initial_conditions, time_frame, method):
-    """
-    Dummy ED solver function that uses the configuration values.
-    In a real application, these values would be used to perform a computation.
-    """
-    print("Running ED Solver with the following configuration:")
-    print("State vector:", state_vector)
-    print("Initial conditions:", initial_conditions)
-    print("Time frame:", time_frame)
-    print("Method:", method)
-    # Simulate processing and return a dummy result
-    result = {"status": "success", "data": "simulation_result"}
-    return result
-
-# ---------- Main Execution Flow ----------
-
-if __name__ == "__main__":
-    # 1. Load the mother blueprint (static part)
-    blueprint_path = os.path.join("blueprints", "mother_blueprint.json")
-    static_config = load_json(blueprint_path)
-    print("Static blueprint loaded.")
-
-    # 2. Load the dynamic parameters file (dynamic part)
-    dynamic_params_path = "dynamic_params.json"
-    dynamic_config = load_json(dynamic_params_path)
-    print("Dynamic parameters loaded.")
-
-    # 3. Merge the two configurations:
-    #    The merged configuration will have the static parts (like ed_solver)
-    #    and the dynamic 'parameters' injected from dynamic_params.json.
-    config = merge_configs(static_config, dynamic_config)
-    print("\nMerged configuration:")
-    print(json.dumps(config, indent=4))
-
-    # 4. Interact with the static ED solver part:
-    #    Extract the ed_solver section to use its values.
-    ed_solver_config = config.get("ed_solver", {})
-    state_vector = ed_solver_config.get("state_vector", [])
-    initial_conditions = ed_solver_config.get("initial_conditions", [])
-    time_frame = ed_solver_config.get("time_frame", [])
-    method = ed_solver_config.get("method", "")
-
-    # 5. Use these values in another function (the ED solver function)
-    result = ed_solver_function(state_vector, initial_conditions, time_frame, method)
-    print("\nED Solver result:")
-    print(result)
