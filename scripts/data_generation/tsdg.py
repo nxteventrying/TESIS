@@ -26,22 +26,24 @@ class Sistema:
         self.solucion = None
 
     def set_metodo(self, nuevo_metodo):
+
         """
         Permite cambiar el método de integración numérica.
-
-        Parámetros:
-          - nuevo_metodo: Método de integración (e.g., "RK45", "DOP853").
         """
+
         self.metodo = nuevo_metodo
         print(f"Método cambiado a {self.metodo}")
 
     def resolver(self):
+
         """Resuelve la EDO utilizando el método numérico definido."""
+
         self.solucion = solve_ivp(self.f, [self.t[0], self.t[-1]], self.y0,
                                     t_eval=self.t, method=self.metodo)
         return self.solucion
     
     def graficar(self, tipo='3d', guardar=False, show_plot=True, filename='plot.png'):
+        
         """
         Genera la gráfica de la solución de la EDO.
         
@@ -107,9 +109,13 @@ class Sistema:
         if show_plot:
             plt.show()
         return fig
-       
-    def dataframe(self):
-        """Devuelve el dataframe de la series de tiempo """
+    
+    @staticmethod   
+    def csv_or_dataframe(self, filename = None):
+
+        """Devuelve el dataframe de la series de tiempo, o un csv
+         si es que le damos un nombre """
+        
         if self.solucion is None:
             raise ValueError("Primero debes resolver la ecuación.")
         
@@ -119,5 +125,8 @@ class Sistema:
         Z = self.solucion.y[2]
      
         df = pd.DataFrame({'x':X,'y':Y,'z':Z })
+
+        if filename:
+            df.to_csv(filename, index=False)
 
         return df
