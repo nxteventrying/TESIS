@@ -18,13 +18,13 @@ class Binder:
         print(f"Module {module_name} imported and available globally.")
         return module
     
+     
+    def fixer(self, params):
+        if self.module is None:
+            print("You have to import_module first :)")
+        fixed_function = partial(self.module,*params)
 
-    # def fixer(self, params):
-    #     if self.module is None:
-    #         print("You have to import_module first :)")
-
-    #     return fixed_function
-
+        return fixed_function
    
 
 
@@ -51,15 +51,25 @@ class Binder:
 #     return function
 
 
-# # Ejemplo para un único sistema:
-# sigma_val = 10.0 
-# beta_val = 8.0 / 3.0
-# rho_val = 28.0
 
 
+# if __name__ == "__main__":
+#     #binder = Binder()
+#     binder.import_module("systems.aizawa")
 
-# # Rango de tiempo e condiciones iniciales
-# t = np.linspace(0, 100, 10000)
-# y0 = [1.0, 1.0, 1.0]
+# # Now you can call it directly without instantiating Binder
+# if __name__ == "__main__":
+#     Binder.import_module("systems.aizawa")
 
-
+# if __name__ == "__main__":
+#     # Import the module
+#     module_name = "systems.aizawa"
+#     module = Binder.import_module(module_name)
+    
+#     # Access a function named 'aizawa' within the imported module
+#     function_name = "aizawa"
+#     if hasattr(module, function_name):
+#         aizawa_function = getattr(module, function_name)
+#         print(f"Function '{function_name}' from '{module_name}' is now accessible.")
+#     else:
+#         print(f"Function '{function_name}' not found in '{module_name}'.")

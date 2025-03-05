@@ -89,7 +89,7 @@ def sys_params_gen(params, number_of_child_systems):
     y = []
     for key,value in child_parameters_bag.items():
       y.append(value[i])
-    systems_params_dict[f"system_{i}_params"] = list(y) 
+    systems_params_dict[f"system_{i}_params"] = tuple(y) 
   
   return systems_params_dict  
 
