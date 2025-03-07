@@ -1,138 +1,67 @@
-from utils.reader import read_config as reader
-from data_generation.binder import Binder as binder
-from data_generation.tsdg import Sistema as system
-import os
-import time
+import numpy as np
+from utils.helpers import load_config
+from utils.helpers import sys_params_gen as params_gen
+from utils.helpers import initial_conditions_gen as ic_gen
+from utils.all_in_one import df_in_one 
 
-# Ask for configuration file
+from tqdm import tqdm
 
-def load_config():
 
-    answer = input("Do you have a configuration file? (Y/N): ").strip().lower()
-
-    if answer == "y":
-        file_path = input("Where is your configuration file for this test?\n").strip()
-        
-        # /home/think/Desktop/TESIS/test_runs/test_1/test1.json
-
-        # Check if file exists
-        if not os.path.isfile(file_path):
-            print("File not found. Make sure you typed the correct path.")
-            exit(1)  # Exit script
-
-        print("\nLoading configuration...")
-        time.sleep(1)  # <- Delay for 2 seconds
-        config_data = reader(file_path)  # Read JSON
-        print("Configuration loaded")
-
-        return config_data
-
-    else:
-        print("Go and make one with architect.py you dumbass")
-        exit(1)
+# Ask for configuration file, or make one
+# we have one LOL
+# /home/think/Desktop/TESIS/test_runs/test_3/test3.json
 
 config_data = load_config()
 
-# # Print everything nicely
-# print("\nPLease check the configuration:\n")
-# for key, value in config_data.items():
-#     print(f"{key}: {value}")
+#we extract the variables we need 
 
+test_number = config_data["test_number"] # coming soon
+parent_model = config_data["parent_model"] # se usa
+number_of_child_systems = config_data["number_of_child_systems"] # se usa
+kind_step = config_data["kind_step"] # coming soon
 
-test_number = config_data["test_number"]
-parent_model = config_data["parent_model"]
-number_of_child_systems = config_data["number_of_child_systems"]
-kind_step = config_data["kind_step"]
+params = config_data["params"] # se usa
 
-params = config_data["params"]
+initial_conditions = config_data["initial_conditions"] # se usa
+t_span = config_data["t_span"] # se usa
+num_points = config_data["num_points"] # se usa
 
-initial_conditions = config_data["initial_conditions"]
-t_span = config_data["t_span"]
-num_points = config_data["num_points"]
+# parameters for each system
+systems_params_dict = params_gen(params,
+                                number_of_child_systems)
+#initial conditions for each system
+systems_initial_dict = ic_gen(initial_conditions,
+                                 number_of_child_systems)
 
+# now we make the loop for the csv generation
+# we will need a place to store this csv, so we can include
+# that in the configuration or ask the user directly,
+# but he kinda dumbass so we need to make it robust if we want to add it
 
-# Now one of the main problems is that this code must accept any configuration file,
-# i.e, we need to somehow not declare any variables for params
+t_span = (t_span["start"], t_span["end"])
+t_eval = np.linspace(t_span[0], t_span[1], num_points)  
 
-
-# Dynamically create global variables with their min and max values
-for key, value in params.items():
-    globals()[f"{key}_test1"] = value
-    globals()[f"{key}_min_test1"] = value["min"]
-    globals()[f"{key}_max_test1"] = value["max"]
-
-# Automatically print all the dynamically created variables for each key
-for key in params.keys():
-    var_name = f"{key}_test1"
-    min_name = f"{key}_min_test1"
-    max_name = f"{key}_max_test1"
-    print(f"{var_name}: {globals()[var_name]}")
-    print(f"{min_name}: {globals()[min_name]}")
-    print(f"{max_name}: {globals()[max_name]}")
+# parent_model, cause we need to summon the .py function
 
 
 
+#parent_model = "lorenz63"  
+package_prefix = "systems" # nah amigo, re copado el fix que me hice
+                           # salario de 401k coming soon
 
-
-# Loop through each key in params and create a variable dynamically.
-# for key, value in params.items():
-#     var_name = f"{key}_test1"  # e.g., 'sigma_test1'
-#     globals()[var_name] = value
-#     # Use the variable as needed
-#     print(f"{var_name} =", globals()[var_name])
-    # If you only need it temporarily, you can delete it after use:
-    # del globals()[var_name]
-
-# # Optionally, if you want to clean up after the loop:
-# for key in list(params.keys()):
-#     var_name = f"{key}_test1"
-#     if var_name in globals():
-#         del globals()[var_name]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# if __name__ == "__main__":
-#     #binder = Binder()
-#     binder.import_module("systems.aizawa")
-
-# # Now you can call it directly without instantiating Binder
-# if __name__ == "__main__":
-#     Binder.import_module("systems.aizawa")
-
-# if __name__ == "__main__":
-#     # Import the module
-#     module_name = "systems.aizawa"
-#     module = Binder.import_module(module_name)
-    
-#     # Access a function named 'aizawa' within the imported module
-#     function_name = "aizawa"
-#     if hasattr(module, function_name):
-#         aizawa_function = getattr(module, function_name)
-#         print(f"Function '{function_name}' from '{module_name}' is now accessible.")
-#     else:
-#         print(f"Function '{function_name}' not found in '{module_name}'.")
-
-
-
-
-
+# Create a tqdm progress bar
+total_systems = len(systems_params_dict)  # Total iterations
+with tqdm(total=total_systems, desc="Processing systems", unit="system") as pbar:
+    for (k1, v1), (k2, v2) in zip(systems_params_dict.items(), systems_initial_dict.items()):
+        cuco = df_in_one(
+            module_name=f"{package_prefix}.{parent_model}", 
+            function_name=parent_model, 
+            params=v1, 
+            t_span=t_span, 
+            y0=v2, 
+            method='RK45', 
+            t_eval=t_eval
+        )
+        cuco.to_csv(f"/home/think/Desktop/TESIS/test_runs/test_{str(test_number)}/{str(k1)}.csv") #k1 is not the name we inteded for, just keep it in mind to change it later
+        
+        pbar.update(1)  # Increment progress bar

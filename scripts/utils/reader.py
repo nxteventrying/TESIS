@@ -35,35 +35,3 @@ def read_config(file_path):
         "num_points": num_points
     }
 
-
-
-
-# import json
-
-# def read_config(file_path):
-#     """Reads a JSON config file and returns all parameters dynamically."""
-#     try:
-#         with open(file_path, 'r') as file:
-#             config = json.load(file)
-
-#         extracted_values = []
-
-#         def extract_values(obj):
-#             """Recursively extracts all numeric values, including ranges."""
-#             if isinstance(obj, dict):
-#                 for key, value in obj.items():
-#                     extract_values(value)
-#             elif isinstance(obj, list) and all(isinstance(i, (int, float)) for i in obj):
-#                 extracted_values.extend(obj)  # Add all list values
-#             elif isinstance(obj, (int, float)):
-#                 extracted_values.append(obj)  # Add single values
-
-#         extract_values(config)
-#         return tuple(extracted_values)
-
-#     except FileNotFoundError:
-#         print(f"Error: File '{file_path}' not found.")
-#         return None
-#     except json.JSONDecodeError:
-#         print(f"Error: Invalid JSON format in '{file_path}'.")
-#         return None
