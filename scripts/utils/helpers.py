@@ -77,7 +77,6 @@ def sys_params_gen(params, number_of_child_systems):
       min_value = value["min"]
       max_value = value["max"]
       step = (max_value - min_value) / number_of_child_systems
-      print(step)
       child_parameters_bag[key] = list(frange(min_value, max_value, step))
 
   systems_params_dict = {}

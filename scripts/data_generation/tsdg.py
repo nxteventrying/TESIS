@@ -42,8 +42,8 @@ class Sistema:
                                     t_eval=self.t, method=self.metodo)
         return self.solucion
     
+
     def graficar(self, tipo='3d', guardar=False, show_plot=True, filename='plot.png'):
-        
         """
         Genera la gráfica de la solución de la EDO.
         
@@ -66,7 +66,7 @@ class Sistema:
             ax.set_xlabel('x')
             ax.set_ylabel('y')
             ax.set_zlabel('z')
-            ax.set_title(f'{self.f.__name__} Attractor (3D)')
+            ax.set_title(f'Attractor (3D)')  # {self.f.func.__name__}
             ax.view_init(elev=30, azim=60)
 
         elif tipo == 'series':
@@ -80,37 +80,26 @@ class Sistema:
                 axs[i].grid()
 
             axs[-1].set_xlabel("Time")
-            fig.suptitle(f"Series de Tiempo de {self.f.__name__}")
+            fig.suptitle(f"Series de Tiempo de {getattr(self.f, 'func', self.f).__name__}")
 
         else:
             raise ValueError("Tipo de gráfica no reconocido. Usa '3d' o 'series'.")
 
         plt.tight_layout()
 
+        # ✅ Only save if 'guardar' is True
         if guardar:
-            
-            fig.savefig(filename)
-            print(f"Gráfica guardada en {filename}")
-
-        # Define the directory and filename
-        directory = '/path/to/save/directory'
-        filename = 'my_plot.png'
-
-        # Ensure the directory exists
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
-        # Construct the full path
-        full_path = os.path.join(directory, filename)
-
-        # Save the figure
-        plt.savefig(full_path)
+            directory = "/path/to/save/directory"  # Change this to a real path
+            os.makedirs(directory, exist_ok=True)  # ✅ No permission error, creates if missing
+            full_path = os.path.join(directory, filename)
+            fig.savefig(full_path)
+            print(f"Gráfica guardada en {full_path}")
 
         if show_plot:
             plt.show()
+
         return fig
-    
-    @staticmethod   
+       
     def csv_or_dataframe(self, filename = None):
 
         """Devuelve el dataframe de la series de tiempo, o un csv

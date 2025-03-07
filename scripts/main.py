@@ -4,10 +4,12 @@ from utils.helpers import sys_params_gen as params_gen
 from utils.helpers import initial_conditions_gen as ic_gen
 from utils.all_in_one import df_in_one 
 
+from tqdm import tqdm
+
 
 # Ask for configuration file, or make one
 # we have one LOL
-# /home/think/Desktop/TESIS/test_runs/test_1/test1.json
+# /home/think/Desktop/TESIS/test_runs/test_3/test3.json
 
 config_data = load_config()
 
@@ -43,20 +45,23 @@ t_eval = np.linspace(t_span[0], t_span[1], num_points)
 
 
 
-#parent_model = "lorenz63"  # Nombre del módulo sin prefijo
-package_prefix = "scripts.systems"  # Ruta dentro de tu proyecto
-#module_name = f"{package_prefix}.{parent_model}"  # Construcción dinámica
-#function_name = parent_model  # Si la función se llama igual que el módulo
-#print(module_name)
+#parent_model = "lorenz63"  
+package_prefix = "systems" # nah amigo, re copado el fix que me hice
+                           # salario de 401k coming soon
 
-for (k1, v1), (k2, v2) in zip(systems_params_dict.items(), systems_initial_dict.items()):
-     #v1 is the parameters
-     #v2 is the initial condition
-    cuco = df_in_one(module_name = f"{package_prefix}.{parent_model}", 
-                     function_name = parent_model, 
-                     params = v1, 
-                     t_span = t_span, 
-                     y0 = v2, 
-                     method='RK45', 
-                     t_eval=t_eval)
-    cuco.to_csv(f"/home/think/Desktop/TESIS/test_runs/{str(k1)}.csv")
+# Create a tqdm progress bar
+total_systems = len(systems_params_dict)  # Total iterations
+with tqdm(total=total_systems, desc="Processing systems", unit="system") as pbar:
+    for (k1, v1), (k2, v2) in zip(systems_params_dict.items(), systems_initial_dict.items()):
+        cuco = df_in_one(
+            module_name=f"{package_prefix}.{parent_model}", 
+            function_name=parent_model, 
+            params=v1, 
+            t_span=t_span, 
+            y0=v2, 
+            method='RK45', 
+            t_eval=t_eval
+        )
+        cuco.to_csv(f"/home/think/Desktop/TESIS/test_runs/test_{str(test_number)}/{str(k1)}.csv") #k1 is not the name we inteded for, just keep it in mind to change it later
+        
+        pbar.update(1)  # Increment progress bar

@@ -1,5 +1,8 @@
 import numpy as np
 
+# The main job is to make easier the scripting
+# but also to control the chaotic behaviour
+# like, it allows them to be a certain way
 
 class Architect:
     """
