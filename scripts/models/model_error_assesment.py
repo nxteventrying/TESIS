@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
 
-def model_assessment(train,test,predictions, chart_title):
+def model_assessment(test,predictions, chart_title):
   plt.figure(figsize = (10,4))
-  plt.plot(train, label = 'Train')
+  #plt.plot(train, label = 'Train')
   plt.plot(test, label = 'test')
   plt.plot(predictions, label = 'Forecast')
   plt.title(chart_title)
