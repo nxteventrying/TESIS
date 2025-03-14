@@ -1,4 +1,4 @@
-def chen(t,state, alpha, beta, delta):
+def chen(alpha, beta, delta, t,state):
     x, y, z = state
     dx = alpha * x - y * z
     dy = beta * y + x * z

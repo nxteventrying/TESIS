@@ -14,7 +14,7 @@ class Binder:
     def import_module(self):
         """Imports the module and assigns it to self.module."""
         self.module = importlib.import_module(self.module_name)
-        print(f"Module {self.module_name} imported successfully.")
+        #print(f"Module {self.module_name} imported successfully.")
      
     def fixer(self):
         """Fixes parameters to the function and returns a partially applied function."""

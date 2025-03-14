@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 # Ask for configuration file, or make one
 # we have one LOL
-# /home/think/Desktop/TESIS/test_runs/test_3/test3.json
+# /home/think/Desktop/TESIS/test_runs/test_5/test5.json
 
 config_data = load_config()
 

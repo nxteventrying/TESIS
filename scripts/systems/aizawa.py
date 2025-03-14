@@ -1,4 +1,4 @@
-def aizawa(t,state, a, b, c, d, e, f):
+def aizawa(a, b, c, d, e, f, t,state):
     x, y, z = state
     dx = (z - b) * x - d * y
     dy = d * x + (z - b) * y
