@@ -4,6 +4,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import solve_ivp
 import pandas as pd
 import os
+import matplotlib.animation as animation
+
 
 class Sistema:
 
@@ -42,7 +44,58 @@ class Sistema:
                                     t_eval=self.t, method=self.metodo)
         return self.solucion
     
+    def atractor_animation(self):
+        
+        sol = self.solucion  
+        x, y, z = sol.y  # Extract trajectory data
 
+        # Set up the figure and 3D axis
+        fig = plt.figure(figsize=(8, 6))
+        ax = fig.add_subplot(111, projection='3d')
+        ax.set_xlim((np.min(x), np.max(x)))
+        ax.set_ylim((np.min(y), np.max(y)))
+        ax.set_zlim((np.min(z), np.max(z)))
+        ax.set_title("Attractor Animation")
+
+        # Initialize the plot elements
+        trail_length = 150  # Number of points in fading trace
+        line, = ax.plot([], [], [], 'r-', lw=1)  # Main trajectory
+        trace, = ax.plot([], [], [], 'g-', lw=2, alpha=0.7)  # Fading trace
+        point, = ax.plot([], [], [], 'bo', markersize=6)  # Moving point
+
+        def update(i):
+            if i < trail_length:
+                trace_x = x[:i]
+                trace_y = y[:i]
+                trace_z = z[:i]
+            else:
+                trace_x = x[i - trail_length:i]
+                trace_y = y[i - trail_length:i]
+                trace_z = z[i - trail_length:i]
+
+            # 🛠 Fix: Only apply fading if the trace has points
+            if len(trace_x) > 0:
+                fade_alpha = np.linspace(0.1, 1.0, len(trace_x))  # Gradient fade
+                trace.set_alpha(fade_alpha[0])  # Apply fading effect
+
+            # Update the trace
+            trace.set_data(trace_x, trace_y)
+            trace.set_3d_properties(trace_z)
+
+            # Update main trajectory and moving point
+            line.set_data(x[:i], y[:i])
+            line.set_3d_properties(z[:i])
+            point.set_data(x[i], y[i])
+            point.set_3d_properties(z[i])
+
+            return line, trace, point
+        # Run animation
+        ani = animation.FuncAnimation(fig, update, frames=len(self.t), interval=10, blit=False)
+
+        plt.show()
+
+
+        return
     def graficar(self, tipo='3d', guardar=False, show_plot=True, filename='plot.png'):
         """
         Genera la gráfica de la solución de la EDO.
