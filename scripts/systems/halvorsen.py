@@ -1,4 +1,4 @@
-def halvorsen(t,state, a):
+def halvorsen(a, t, state):
     x, y, z = state
     dx = - a * x - 4 * y - 4 * z - y ** 2
     dy = - a * y - 4 * z - 4 * x - z ** 2 

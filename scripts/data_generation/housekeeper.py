@@ -1,2 +1,0 @@
-class HouseKeeper:
-    pass

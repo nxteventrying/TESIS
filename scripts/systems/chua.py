@@ -1,4 +1,4 @@
-def chua(t,state, sigma, beta, rho):
+def chua(sigma, beta, rho, t,state):
     x, y, z = state
     dx = sigma * (y - x)
     dy = x * (rho - z) - y

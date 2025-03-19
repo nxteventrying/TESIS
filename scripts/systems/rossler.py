@@ -1,4 +1,4 @@
-def rossler(t,state, a,b,c):
+def rossler(a,b,c, t,state):
     x, y, z = state
     dx = - y - z
     dy = x + a * y
