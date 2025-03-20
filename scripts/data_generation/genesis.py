@@ -170,11 +170,11 @@ def genesis_bulk_global(file_path, destination_path):
                     # Solve the system
                     sistema.resolver()
                     # Display a cutie plot
-                    #sistema.graficar(tipo='3d', guardar=False, show_plot=True)
+                    sistema.graficar(tipo='series', guardar=False, show_plot=True)
                     # Get the DataFrame for the solution
                     ruta = os.path.join(f"{destination_path}",f"test_{test_number}",f"{parent_model}" ,f"{parent_model}_{i}.csv")
                     #sistema.csv_or_dataframe(ruta)
-                    sistema.atractor_animation()
+                    #sistema.atractor_animation()
                     #print(f'{parent_model}_{i} has been generated \n at {ruta}')
                 elapsed_time = time.time() - start_time
                 progress.update(task,advance=1, description=f"[cyan]{parent_model}_{i}: {elapsed_time:.2f}s")

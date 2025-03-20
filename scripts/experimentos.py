@@ -397,14 +397,11 @@
 
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from mpl_toolkits.mplot3d import Axes3D
+
+
+
 from data_generation.tsdg import Sistema as sys
 from data_generation.binder import Binder
-
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -417,7 +414,7 @@ def wachi(system_name, parameters):
     binder = Binder(f"systems.{system_name}", f"{system_name}", parameters)
     binder.import_module()
     lorenz_fixed = binder.fixer()  # Partially applied function
-
+    
     # Time range
     t = np.linspace(0, 105, 3000)  # More frames for a smoother animation
 

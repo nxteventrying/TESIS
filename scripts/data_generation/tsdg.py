@@ -140,10 +140,9 @@ class Sistema:
 
         plt.tight_layout()
 
-        # ✅ Only save if 'guardar' is True
         if guardar:
-            directory = "/path/to/save/directory"  # Change this to a real path
-            os.makedirs(directory, exist_ok=True)  # ✅ No permission error, creates if missing
+            directory = "/path/to/save/directory" 
+            os.makedirs(directory, exist_ok=True)  
             full_path = os.path.join(directory, filename)
             fig.savefig(full_path)
             print(f"Gráfica guardada en {full_path}")
@@ -161,7 +160,6 @@ class Sistema:
         if self.solucion is None:
             raise ValueError("Primero debes resolver la ecuación.")
         
-        # for i in range(self.solucion.y.shape[0]):
         X = self.solucion.y[0]
         Y = self.solucion.y[1]
         Z = self.solucion.y[2]
