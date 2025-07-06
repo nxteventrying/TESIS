@@ -21,7 +21,7 @@ genesis_bulk_global(genesis_file_path, destination_path)
 
 # STEP 2: DATA PREPARATION
 from utils.helpers import crawler
-from utils.transmutation import transition
+from scripts.utils.plastic_surgeon import transition
 
 '''
 Okay, so at this point we have the data generated stored a certain way and
