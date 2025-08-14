@@ -1,26 +1,26 @@
 
 { "run_mode": "global",
   "warden": {
-            "aizawa": true,
+            "aizawa": false,
             "chen": true,
-            "chua": true,
-            "dadras": true,
-            "four_wing": true,
-            "halvorsen": true,
+            "chua": false,
+            "dadras": false,
+            "four_wing": false,
+            "halvorsen": false,
             "lorenz63": true,
-            "lorenz83": true,
-            "ravinoch_fabrikant": true,
+            "lorenz83": false,
+            "ravinoch_fabrikant": false,
             "rossler": true,
-            "sprott": true,
-            "thomas": true,
-            "tsucs": true
+            "sprott": false,
+            "thomas": false,
+            "tsucs": false
           },
   "shared_parameters": {
-            "test_number": 8,
+            "test_number": 10,
             "number_of_child_systems": 1,
             "kind_step": "even",
             "t_span": [0, 105],
-            "num_points": 7350,
+            "num_points": 735,
             "initial_conditions": {
              "x": {"min": 0.1, "max": 0.11},
              "y": {"min": 0.1, "max": 0.11},
@@ -41,7 +41,7 @@
     },
       "chen" : {
       "params": {
-        "alpha": [5, 5.1],
+        "alpha": [40, 5.1],
         "beta": [-10, -9.99],
         "delta": [-0.38, -0.37]
       }
@@ -98,9 +98,9 @@
     },
       "rossler" : {
       "params": {
-        "a": [0.2, 0.6],
-        "b": [0.2, 0.6],
-        "c": [5.7, 6.7]
+        "a": [0.2, 0.3],
+        "b": [0.2, 0.3],
+        "c": [5.7, 5.8]
       } 
     },
       "sprott" : {
