@@ -1,4 +1,4 @@
-# Chaotic Time Series Generation & Forecasting
+# Chaotic Time Series Generation, Analysis, and Forecasting
 
 This repository contains code, scripts, and experiments for generating, processing, and forecasting chaotic time series.  
 The work is inspired and guided by three main references:
